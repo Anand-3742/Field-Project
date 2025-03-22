@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Planner</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: black;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1.title {
+            font-size: 3rem;
+            color: #f1c40f;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+
+        #current-date-time {
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #ecf0f1;
+            text-align: center;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Container Styles */
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .heading {
+            font-size: 1.8rem;
+            color: #ecf0f1;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Task, Event, Note, Contact, Bookmark Styles */
+        .task, .event, .note, .contact, .bookmark {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #34495e;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .task:hover, .event:hover, .note:hover, .contact:hover, .bookmark:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .task.completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .task-priority {
+            font-style: italic;
+            margin-left: 10px;
+        }
+
+        .deadline {
+            color: #e74c3c;
+        }
+
+        /* Button Styles */
+        button {
+            background-color: #f1c40f;
+            border: none;
+            color: #2c3e50;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d35400;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .clear-btn {
+            background-color: #34495e;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            color: #ecf0f1;
+            margin-top: 20px;
+        }
+
+        .clear-btn:hover {
+            background-color: #2c3e50;
+        }
+
+        /* Input Fields Styles */
+        input[type="text"], input[type="date"], select {
+            padding: 8px;
+            margin-top: 10px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #bdc3c7;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        input[type="text"]:focus, input[type="date"]:focus, select:focus {
+            outline: none;
+            border: 2px solid #f1c40f;
+        }
+
+        /* Layout and Misc */
+        .task img, .event img, .note img, .contact img, .bookmark img {
+            border-radius: 8px;
+            margin-right: 10px;
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-group input, .form-group select {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="current-date-time"></div>
+    <h1 class="title">Comprehensive Planner</h1>
+
+    <!-- Today's Tasks Section -->
+    <div class="container section" id="tasks-container">
+        <h2 class="heading">Today's Tasks</h2>
+        <div id="tasks-list"></div>
+        <div class="form-group">
+            <input type="text" id="task-input" placeholder="Enter new task">
+            <input type="date" id="deadline-input">
+            <select id="priority-input">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <input type="text" id="category-input" placeholder="Category">
+        </div>
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <!-- Upcoming Events Section -->
+    <div class="container section" id="events-container">
+        <h2 class="heading">Upcoming Events</h2>
+        <div id="events-list"></div>
+        <div class="form-group">
+            <input type="text" id="event-input" placeholder="Event Name">
+            <input type="date" id="event-date-input">
+            <input type="text" id="event-location-input" placeholder="Location">
+        </div>
+        <button onclick="addEvent()">Add Event</button>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="container section" id="notes-container">
+        <h2 class="heading">Notes</h2>
+        <div id="notes-list"></div>
+        <input type="text" id="note-input" placeholder="Enter note">
+        <button onclick="addNote()">Add Note</button>
+    </div>
+
+    <!-- Contacts Section -->
+    <div class="container section" id="contacts-container">
+        <h2 class="heading">Contacts</h2>
+        <div id="contacts-list"></div>
+        <div class="form-group">
+            <input type="text" id="contact-name-input" placeholder="Name">
+            <input type="text" id="contact-phone-input" placeholder="Phone">
+        </div>
+        <button onclick="addContact()">Add Contact</button>
+    </div>
+
+    <!-- Bookmarks Section -->
+    <div class="container section" id="bookmarks-container">
+        <h2 class="heading">Bookmarks</h2>
+        <div id="bookmarks-list"></div>
+        <div class="form-group">
+            <input type="text" id="bookmark-url-input" placeholder="URL">
+            <input type="text" id="bookmark-title-input" placeholder="Title">
+        </div>
+        <button onclick="addBookmark()">Add Bookmark</button>
+    </div>
+
+    <!-- Clear All Data Button -->
+    <button class="clear-btn" onclick="clearAllData()">Clear All Data</button>
+
+    <script>
+        // JavaScript remains the same, no changes required for functionality
+        function updateDateTime() {
+            document.getElementById('current-date-time').textContent = new Date().toLocaleString();
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+        
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+        let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        
+       function renderTasks() {
+    const tasksList = document.getElementById('tasks-list');
+    tasksList.innerHTML = '';
+    tasks.forEach((task, index) => {
+        tasksList.innerHTML += `
+            <div class="task ${task.completed ? 'completed' : ''}">
+                <img src="https://via.placeholder.com/100" alt="Task Image">
+                <span onclick="toggleComplete(${index})">${task.text}</span>
+                <span class="deadline">${task.deadline || ''}</span>
+                <span class="task-priority">${task.priority}</span>
+                <span class="category">${task.category || ''}</span>
+                <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
+            </div>
+        `;
+    });
+    updateTaskCount();
+}
+
+
+        function addTask() {
+            const taskText = document.getElementById('task-input').value.trim();
+            const deadline = document.getElementById('deadline-input').value;
+            const priority = document.getElementById('priority-input').value;
+            const category = document.getElementById('category-input').value.trim();
+            if (taskText) {
+                tasks.push({ text: taskText, completed: false, deadline, priority, category });
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                renderTasks();
+            }
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function toggleComplete(index) {
+            tasks[index].completed = !tasks[index].completed;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+ function updateTaskCount() {
+            const taskCountBadge = document.getElementById('task-count-badge');
+            taskCountBadge.textContent = tasks.length;
+        }
+
+        function renderEvents() {
+    const eventsList = document.getElementById('events-list');
+    eventsList.innerHTML = events.map((event, index) =>
+        `
+        <div class="event">
+            <img src="https://via.placeholder.com/100" alt="Event Image">
+            ${event.name} - ${event.date}
+            <button class="delete-btn" onclick="deleteEvent(${index})">Delete</button>
+        </div>
+        `
+    ).join('');
+}
+
+
+        function addEvent() {
+            const eventName = document.getElementById('event-input').value.trim();
+            const eventDate = document.getElementById('event-date-input').value;
+            if (eventName && eventDate) {
+                events.push({ name: eventName, date: eventDate });
+                localStorage.setItem('events', JSON.stringify(events));
+                renderEvents();
+            }
+        }
+
+        function deleteEvent(index) {
+            events.splice(index, 1);
+            localStorage.setItem('events', JSON.stringify(events));
+            renderEvents();
+        }
+
+       function renderNotes() {
+    const notesList = document.getElementById('notes-list');
+    notesList.innerHTML = notes.map((note, index) =>
+        `
+        <div class="note">
+            <img src="https://via.placeholder.com/100" alt="Note Image">
+            ${note}
+            <button class="delete-btn" onclick="deleteNote(${index})">Delete</button>
+        </div>
+        `
+    ).join('');
+}
+
+        function addNote() {
+            const noteText = document.getElementById('note-input').value.trim();
+            if (noteText) {
+                notes.push(noteText);
+                localStorage.setItem('notes', JSON.stringify(notes));
+                renderNotes();
+            }
+        }
+
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            renderNotes();
+        }
+
+      function renderContacts() {
+    const contactsList = document.getElementById('contacts-list');
+    contactsList.innerHTML = contacts.map((contact, index) =>
+        `
+        <div class="contact">
+            <img src="https://via.placeholder.com/100" alt="Contact Image">
+            ${contact.name} - ${contact.phone}
+            <button class="delete-btn" onclick="deleteContact(${index})">Delete</button>
+        </div>
+        `
+    ).join('');
+}
+
+
+        function addContact() {
+            const name = document.getElementById('contact-name-input').value.trim();
+            const phone = document.getElementById('contact-phone-input').value.trim();
+            if (name && phone) {
+                contacts.push({ name,
+                 phone });
+                localStorage.setItem('contacts', JSON.stringify(contacts));
+                renderContacts();
+            }
+        }
+
+        function deleteContact(index) {
+            contacts.splice(index, 1);
+            localStorage.setItem('contacts', JSON.stringify(contacts));
+            renderContacts();
+        }
+
+       function renderBookmarks() {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    bookmarksList.innerHTML = bookmarks.map((bookmark, index) =>
+        `
+        <div class="bookmark">
+            <img src="https://via.placeholder.com/100" alt="Bookmark Image">
+            <a href="${bookmark.url}" target="_blank">${bookmark.title}</a>
+            <button class="delete-btn" onclick="deleteBookmark(${index})">Delete</button>
+        </div>
+        `
+    ).join('');
+}
+
+
+        function addBookmark() {
+            const bookmarkUrl = document.getElementById('bookmark-url-input').value.trim();
+            const bookmarkTitle = document.getElementById('bookmark-title-input').value.trim();
+            if (bookmarkUrl && bookmarkTitle) {
+                bookmarks.push({ url: bookmarkUrl, title: bookmarkTitle });
+                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                renderBookmarks();
+            }
+        }
+
+        function deleteBookmark(index) {
+            bookmarks.splice(index, 1);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            renderBookmarks();
+        }
+
+        function clearAllData() {
+            localStorage.clear();
+            location.reload();
+        }
+renderTasks();
+renderEvents();
+renderNotes();
+renderContacts();
+renderBookmarks();
+
+           </script>
+</body>
+</html>
